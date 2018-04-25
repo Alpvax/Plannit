@@ -89,6 +89,10 @@ export default new Vuex.Store({
       commit("FINISH_TODO", todo);
     },
 
+    repositionTodo({ commit }, moved) {
+      commit("REPOSITION_TODO", moved);
+    },
+
     updateIncompleteList({ commit }, value) {
       commit("UPDATE_INCOMPLETE_LIST", value);
     },
@@ -129,6 +133,13 @@ export default new Vuex.Store({
       } else {
         state.incompleteTodos.push(todo);
       }
+    },
+
+    REPOSITION_TODO(state, {oldIndex, newIndex}) {
+      //TODO: Which? complete?
+      let arr = state.incompleteTodos;
+      arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+      state.incompleteTodos = arr;
     },
 
     DELETE_INCOMPLETE_TODO(state, todo) {

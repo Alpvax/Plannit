@@ -5,19 +5,19 @@
       <div>Done: {{completeTodos.length}}</div>
     </div>
     <textarea class="new-todo" placeholder="Add new todo" v-model="todoText" @keypress.enter.prevent="addNewTodo"/>
-    <draggable v-model="incompleteTodos">
-      <todo 
-        v-for="todo in incompleteTodos" 
-        :key="todo.id" 
-        :todo="todo" 
+    <draggable v-model="incompleteTodos" @change="debugChange">
+      <todo
+        v-for="todo in incompleteTodos"
+        :key="todo.id"
+        :todo="todo"
         class="incomplete"/>
-      <hr class="separator" v-show="incompleteTodos.length !== 0 && completeTodos.length !== 0">
-    </draggable> 
+    </draggable>
+    <hr class="separator" v-show="incompleteTodos.length !== 0 && completeTodos.length !== 0">
     <draggable v-model="completeTodos">
-      <todo 
-        v-for="todo in completeTodos" 
-        :key="todo.id" 
-        :todo="todo" 
+      <todo
+        v-for="todo in completeTodos"
+        :key="todo.id"
+        :todo="todo"
         class="complete"/>
     </draggable>
   </div>
@@ -39,6 +39,14 @@ export default {
         this.$store.dispatch("addTodo", this.todoText);
         this.todoText = "";
       }
+    },
+    debugChange(e) {
+      if (!e.moved) {
+        console.log("Change: ", e);
+      } else {
+        console.log(`Moving item "${e.moved.element.title}" from position ${e.moved.oldIndex} to position ${e.moved.newIndex}`);
+        this.$store.dispatch("repositionTodo", e.moved);//TODO: Move item
+      }
     }
   },
   components: {
@@ -51,7 +59,7 @@ export default {
         return this.$store.getters.incompleteTodos;
       },
       set(value) {
-        this.$store.dispatch("updateIncompleteList", value);
+        //this.$store.dispatch("updateIncompleteList", value);
       }
     },
     completeTodos: {
